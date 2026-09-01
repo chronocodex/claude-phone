@@ -1,0 +1,28 @@
+; extensions_custom.conf.example
+;
+; Copy the two contexts below into your FreePBX/Asterisk
+; extensions_custom.conf (Admin -> Config Edit, or directly on disk).
+; Replace YOUR_SERVER_IP with the IP of the machine running server.py,
+; and generate two random UUIDs of your own (e.g. `uuidgen` on Linux/Mac,
+; or `[guid]::NewGuid()` in PowerShell) to replace the placeholders below.
+;
+; Why two UUIDs / two contexts: this is how server.py tells "someone just
+; dialed in" apart from "I'm calling the user about an alert" - both
+; contexts point at the same Python server on the same port, but each
+; passes a different UUID on connect. See docs/ARCHITECTURE.md.
+
+; ---------- Tier 1: inbound (dial in and talk) ----------
+[claude-phone-custom]
+exten => s,1,NoOp(Claude Phone - inbound call)
+ same => n,Answer()
+ same => n,AudioSocket(11111111-1111-1111-1111-111111111111,YOUR_SERVER_IP:9000)
+ same => n,Hangup()
+
+; ---------- Tier 3: outbound alert (only needed if you're enabling alerting) ----------
+; The AMI Originate action rings a channel INTO this context - it is never
+; dialed directly by a human.
+[claude-phone-alert]
+exten => s,1,NoOp(Claude Phone - outbound alert)
+ same => n,Answer()
+ same => n,AudioSocket(22222222-2222-2222-2222-222222222222,YOUR_SERVER_IP:9000)
+ same => n,Hangup()

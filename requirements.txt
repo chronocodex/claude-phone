@@ -1,0 +1,8 @@
+anthropic>=0.80.0
+numpy
+soxr
+webrtcvad-wheels
+faster-whisper
+piper-tts
+PyYAML
+python-dotenv

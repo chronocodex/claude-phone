@@ -1,0 +1,30 @@
+[Unit]
+Description=Claude Phone voice AI service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=claudephone
+Group=claudephone
+WorkingDirectory=/opt/claude-phone
+EnvironmentFile=/etc/claude-phone/env
+Environment=HF_HOME=/opt/claude-phone/.cache
+ExecStart=/opt/claude-phone/.venv/bin/python /opt/claude-phone/server.py
+Restart=always
+RestartSec=5
+
+# Hardening. If you add a capability that needs to read/write outside
+# /opt/claude-phone (e.g. an SSH key for a custom tool), you MUST place
+# that file under a path covered by ReadWritePaths below - ProtectHome
+# makes /home (and therefore any user's ~/.ssh) invisible to this
+# service, regardless of which user owns it. This bit us once already;
+# see docs/TROUBLESHOOTING.md.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/claude-phone
+
+[Install]
+WantedBy=multi-user.target

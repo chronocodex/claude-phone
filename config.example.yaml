@@ -1,0 +1,68 @@
+# claude-phone config
+#
+# Copy this file to config.yaml and fill in values for your setup.
+# If config.yaml doesn't exist at all, Tier 1 (core conversation) still
+# works fine - everything in this file is optional, opt-in functionality.
+# See README.md for the tier breakdown.
+
+# ---------- Tier 2: Monitoring ----------
+# Hosts to check for the check_homelab() tool and outage alerting.
+# Each entry is name -> [ip_or_hostname, port]. Leave empty ({}) to
+# disable host monitoring entirely.
+hosts:
+  "My Server": ["192.168.1.10", 80]
+  "My Router": ["192.168.1.1", 443]
+
+# Raw IP used to test internet connectivity - deliberately NOT a hostname,
+# so this works even when DNS itself is down. 1.1.1.1:53 (Cloudflare) is a
+# safe, stable default - no need to change it.
+wan_probe:
+  host: "1.1.1.1"
+  port: 53
+
+# A hostname resolved through your own DNS/resolver, to test that DNS
+# itself is working (as opposed to just "is the internet reachable at
+# all"). Any reliably-up domain works.
+dns_probe: "api.anthropic.com"
+
+# ---------- Tier 3: Alerting ----------
+# Asterisk Manager Interface - lets this service originate an outbound
+# call when something goes down. Leave ami.host blank to disable alerting
+# entirely (Tier 1/2 still work fine without it).
+ami:
+  host: ""                        # e.g. "192.168.1.5"
+  port: 5038
+  user: "claudephone"
+  alert_channel: "PJSIP/100"      # the extension to ring on alert
+  alert_context: "claude-phone-alert"
+  cooldown_seconds: 900           # minimum time between alert calls
+
+# ---------- Optional tools ----------
+# Each of these is independently optional. Leave a section's host/key
+# fields blank to disable that specific tool - it just won't be offered
+# to the model, no errors, no other functionality affected.
+
+pihole:
+  host: ""                        # e.g. "192.168.1.20"
+
+disk_check:
+  ssh_key_path: ""                # e.g. "/opt/claude-phone/.ssh/diskcheck_key"
+  known_hosts_path: ""            # e.g. "/opt/claude-phone/.ssh/known_hosts"
+  hosts:
+    "My Server":
+      hostname: "myserver.local"
+      ssh_user: "youruser"
+      mounts: ["/"]
+
+unifi:
+  host: ""                        # your UDM/UniFi controller's LAN IP
+  site_id: ""                     # GET /proxy/network/integration/v1/sites with your API key to find this
+
+# ---------- Voice / behavior tuning ----------
+# See docs/TUNING.md for the reasoning behind these defaults.
+whisper_model: "base.en"          # tiny.en / base.en / small.en
+piper_voice: "voices/en_US-lessac-medium.onnx"
+silence_frames_to_end: 60         # ~1.2s of silence ends an utterance
+check_interval_seconds: 120       # background monitor poll interval
+filler_first_seconds: 3.0
+filler_repeat_seconds: 7.0

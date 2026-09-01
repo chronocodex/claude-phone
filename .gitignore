@@ -1,0 +1,28 @@
+# Secrets & config — never commit real values
+.env
+config.yaml
+
+# Runtime data
+*.log
+voices/
+__pycache__/
+*.pyc
+.cache/
+household-list.txt
+homelab-events.log
+
+# SSH keys (if anyone copies the diskcheck-key pattern locally)
+*.pem
+*_key
+!*_key.example
+known_hosts
+
+# Python environment
+.venv/
+venv/
+*.egg-info/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
