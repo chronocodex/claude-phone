@@ -75,6 +75,9 @@ MIN_SPEECH_FRAMES = 10
 CHECK_INTERVAL = cfg("check_interval_seconds", default=120)
 GREETING = "Hello this is Claude. What can I do for you?"
 
+CLAUDE_MODEL = cfg("model", default="claude-opus-5")
+CLAUDE_EFFORT = cfg("effort", default="low")
+
 # Deliberately NEUTRAL - these fire on any slow turn, not just searches.
 FILLERS = [
     "One moment.",
@@ -621,6 +624,7 @@ logging.info("models ready")
 
 # ---------- startup summary: what's actually enabled ----------
 logging.info("=== Startup summary ===")
+logging.info("Model: %s (effort: %s)", CLAUDE_MODEL, CLAUDE_EFFORT)
 logging.info("Tier 1 (core conversation): always on")
 logging.info("Tier 2 (monitoring): %s (%d hosts configured, UniFi %s)",
              "on" if HOSTS or UNIFI_ENABLED else "hosts/internet/DNS only",
@@ -667,10 +671,10 @@ logging.info("monitor started (every %ds)", CHECK_INTERVAL)
 
 def ask_claude(history, system=SYSTEM):
     runner = client.beta.messages.tool_runner(
-        model="claude-opus-5",
+        model=CLAUDE_MODEL,
         max_tokens=1024,
         system=system,
-        output_config={"effort": "low"},
+        output_config={"effort": CLAUDE_EFFORT},
         tools=TOOLS,
         messages=history,
     )

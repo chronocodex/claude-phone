@@ -54,12 +54,14 @@ before optimizing something that only looks like a bottleneck.
 shorter audio — so transcription time barely changes with how long the
 caller actually talks. Two consequences:
 
-- Being generous with your silence-detection threshold is nearly free —
-  there's no real cost penalty to letting callers talk longer before the
-  utterance is considered "done."
+- Being generous with your silence-detection threshold (`silence_frames_to_end`
+  in `config.yaml`) is nearly free — there's no real cost penalty to
+  letting callers talk longer before the utterance is considered "done."
 - `small.en` costs meaningfully more per turn than `base.en` — only worth
   it if misheard words become a real, recurring problem for your use
   case. `base.en` is the recommended default.
+
+Set via `whisper_model` in `config.yaml` — no code changes needed.
 
 ## Voice choice
 
@@ -78,8 +80,10 @@ affordable if you want something less robotic than the default.
 
 ## Model speed vs. accuracy (Claude side)
 
-Swapping to a faster/cheaper model, or tightening the word limit in the
-system prompt, are both direct latency levers — the API call dominates
-turn time far more than the local STT/TTS steps do. Start with the
-default and only change it if turn latency is a real problem for your
-use case, not preemptively.
+Set `model` and `effort` in `config.yaml` — no code changes needed for
+either. Swapping to a faster/cheaper model, or tightening the word limit
+in the system prompt (in `server.py`, since prompt wording isn't
+currently config-driven), are both direct latency levers — the API call
+dominates turn time far more than the local STT/TTS steps do. Start with
+the defaults and only change them if turn latency is a real problem for
+your use case, not preemptively.

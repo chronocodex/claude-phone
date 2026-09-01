@@ -26,7 +26,7 @@ to run Whisper locally — see `docs/TUNING.md` for the hardware baseline
 this was built and measured on.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-phone.git
+git clone https://github.com/chronocodex/claude-phone.git
 cd claude-phone
 python3 -m venv .venv
 source .venv/bin/activate

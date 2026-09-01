@@ -58,6 +58,12 @@ unifi:
   host: ""                        # your UDM/UniFi controller's LAN IP
   site_id: ""                     # GET /proxy/network/integration/v1/sites with your API key to find this
 
+# ---------- Claude model tuning ----------
+# See docs/TUNING.md - the model/reply-length choice affects latency far
+# more than the local STT/TTS steps do.
+model: "claude-opus-5"            # swap to a faster/cheaper model here, not in code
+effort: "low"
+
 # ---------- Voice / behavior tuning ----------
 # See docs/TUNING.md for the reasoning behind these defaults.
 whisper_model: "base.en"          # tiny.en / base.en / small.en
